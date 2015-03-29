@@ -1,5 +1,3 @@
-# Intro to Stream Processing w/ AWS Lambda
-
 [AWS Lambda][lambda] is an AWS (developer preview) product that consumes events
 from Kinesis (stream processing), S3 events, DynamoDB changes, and more. You
 can use it to make advanced materialized views out of DynamoDB tables, react to
@@ -13,9 +11,13 @@ static site from markdown files in S3, then we'll examine how that
 application's use of Lambda is actually *wrong* in many ways, and why that's
 so.
 
+## Caveat Emptors
+
 Before we get started, let's agree on a couple of things. Lambda as a service
 name is a bit annoying because it stomps over several other useful contexts for
 the word, but we'll suspend those for the moment.
+
+## Enter Lambda
 
 When Amazon introduced [AWS Lambda][lambda] I saw tons of interesting
 possibilities. Being able to react to events without needing to constantly run
@@ -34,6 +36,8 @@ Every time new content is uploaded, hugo-lambda downloads your site templates,
 themes, and content to run `hugo` and uploads the generated site (with the
 correct storage ACLs) to the public bucket for your site.
 
+## Something's Not Right
+
 This use case is actually totally wrong for Lambda because it violates two
 pretty critical assumptions made by the service. Lambda is built for event
 processing, and makes the assumption that every event is independent and that
@@ -47,6 +51,8 @@ tag listing page (if the post has a new tag), the archives page, and more.
 Without having these changes expressed when a new file is added to S3 it's
 impossible to regenerate the site without downloading all the content and
 templates first.
+
+## Remedies
 
 The only way to *really* fix this would be to build a dependency tree between
 inputs (templates, content, etc) to allow each hugo-lambda run to only download
