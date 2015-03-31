@@ -5,6 +5,15 @@ old content. In short, you write a function (currently only in node.js) and it
 is presented with JSON containing information about the event's source and
 content.
 
+> Another way to run Node.js? Why bother?
+> - Everyone
+
+In a way, Lambda is a (pretty unique) Platform as a Service. A typical PaaS
+offering might offer to serve your Ruby (or whatever) web app, but Lambda takes
+the "serve" part out and replaces it with "reactively run". The instance your
+Lambda function runs on isn't running all the time, and you can have as many
+functions as you can trigger running at once.
+
 This post is a tour of the powerful ways you can use (or misuse) Lambda to
 react to events. First, we'll tour a sample application I built that generates
 a static site from markdown files in S3, then we'll examine how that
@@ -83,18 +92,11 @@ exports.handler = function(event, context) {
 The above code is an abbreviated version of [RunHugo.js][runhugo] from the
 hugo-lambda project, but it can (almost) stand on its own.
 
-## What Lambda is Really For
 
-You may be thinking "Well what is Lambda really *getting at*? Why bother?"
+## Is Lambda a Microservice Platform?
 
-Lambda is a (pretty unique) Platform as a Service. A typical PaaS offering
-might offer to serve your Ruby (or whatever) web app, but Lambda takes the
-"serve" part out and replaces it with "reactively run". The instance your
-Lambda function runs on isn't running all the time, and you can have as many
-functions as you can trigger running at once.
-
-> If you haven't, I really recommend reading Martin Fowler's definitive piece
-> on [Microservices][microservices]
+> As an aside: if you haven't, I really recommend reading Martin Fowler's
+> definitive piece on [Microservices][microservices].
 
 Now, you may be thinking "small programs with limited state and transparent
 scaling? That's just microservices right?" There are certainly overlapping
