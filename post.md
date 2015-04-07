@@ -101,7 +101,7 @@ listen to S3 events. S3 is sort of the odd duck of Lambda notifications because
 it doesn't show up in the `list-event-sources` API, instead it's attached to
 the bucket and is a part of S3's `get-bucket-notification` API.
 
-```json
+```javascript
 {
   "CloudFunctionConfiguration": {
     "InvocationRole": "arn:...InvokeRole-SQU198TLCHES",
@@ -116,7 +116,9 @@ the bucket and is a part of S3's `get-bucket-notification` API.
 ```
 
 Event sources for other DynamoDB and Kinesis follow a similar format, requiring
-an invocation role, function [ARN][arn], and source ARN.
+an invocation role, function [ARN][arn], and source ARN. An Amazon Resource
+Name (ARN) is a unique, namespaced identifier that lets you refer to resources
+in configurations and API calls
 
 ## Is Lambda a Microservice Platform?
 
@@ -140,7 +142,7 @@ In a lot of definitions of microservices, people take this to mean "uses
 RESTful HTTP interfaces between components". Lambda events follow a strict JSON
 format. Here's an abbreviated example of an S3 event for a new object.
 
-```json
+```javascript
 {
   "Records": [
     {
@@ -252,7 +254,7 @@ To solve this with Lambda, we can build a flow like:
 at the end of each game, this record is stored to the DynamoDB
 table. First, let's see what an item looks like.
 
-```json
+```javascript
 {
     "event_key": "{uid}",
     "length_seconds": 55,
@@ -269,7 +271,7 @@ table. First, let's see what an item looks like.
 
 The KeySchema is also important here. That looks like:
 
-```json
+```javascript
 [
   {
     AttributeName: "event_key",
