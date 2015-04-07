@@ -1,21 +1,20 @@
 [AWS Lambda][lambda] is a service (in developer preview) that consumes events
-from Kinesis, S3, DynamoDB, and more. You can use it to make advanced
-materialized views out of DynamoDB tables, react to uploaded images, or archive
-old content. In short, you write a function (currently only in node.js) and it
-is presented with JSON containing information about the event's source and
-content.
+from [Kinesis][kinesis], [S3][s3], [DynamoDB][dynamo], and more. You can use it
+to make advanced materialized views out of DynamoDB tables, react to uploaded
+images, or archive old content. In short, you write a function (currently only
+in [node.js][node]) and it is presented with JSON containing information about the
+event's source and content.
 
 > Another way to run Node.js? Why bother?
 >
 > -- Everyone
 
 In a way, Lambda is a unique take on the Platform as a Service concept. A
-typical PaaS offering might offer to serve your Ruby (or whatever) web app, but
-Lambda takes the "serve" part out and replaces it with "reactively run". The
-instance your Lambda function runs on isn't running all the time, and you can
-have as many functions as you can trigger running at once. You could use it as
-a replacement for resque or another background job processor with a managed
-solution.
+typical [PaaS][paas] might offer to serve your web app, but Lambda takes the
+"serve" part out and replaces it with "reactively run". The instance your
+Lambda function runs on isn't running all the time, and you can have as many
+functions as you can trigger running at once. You could use it as a replacement
+for resque or another background job processor with a managed solution.
 
 This post is a tour of the powerful ways you can use Lambda to react to events.
 First, we'll tour a sample application I built that generates a static site
@@ -68,7 +67,7 @@ binary.
 When included with the Node.js dependencies for the function, `hugo` can be
 invoked as a subprocess using `spawn`.
 
-```
+```javascript
 var async = require('async');
 var spawn = require('child_process').spawn;
 
@@ -102,7 +101,7 @@ listen to S3 events. S3 is sort of the odd duck of Lambda notifications because
 it doesn't show up in the `list-event-sources` API, instead it's attached to
 the bucket and is a part of S3's `get-bucket-notification` API.
 
-```
+```json
 {
   "CloudFunctionConfiguration": {
     "InvocationRole": "arn:...InvokeRole-SQU198TLCHES",
@@ -117,7 +116,7 @@ the bucket and is a part of S3's `get-bucket-notification` API.
 ```
 
 Event sources for other DynamoDB and Kinesis follow a similar format, requiring
-an invocation role, function ARN, and source ARN.
+an invocation role, function [ARN][arn], and source ARN.
 
 ## Is Lambda a Microservice Platform?
 
@@ -141,7 +140,7 @@ In a lot of definitions of microservices, people take this to mean "uses
 RESTful HTTP interfaces between components". Lambda events follow a strict JSON
 format. Here's an abbreviated example of an S3 event for a new object.
 
-```
+```json
 {
   "Records": [
     {
@@ -177,7 +176,7 @@ format. Here's an abbreviated example of an S3 event for a new object.
 That seems pretty simple, it even includes extra metadata about the object like
 it's size and etag (md5sum). The message format is one part of the pipe, the
 other part is how messages are received. The event notification system is very
-straightforward because it only needs the ARN of the sender (source) and
+straightforward because it only needs the [ARN][arn] of the sender (source) and
 receiver (Lambda function) to successfully route messages. All the delivery
 semantics are hidden completely.
 
@@ -223,11 +222,13 @@ better use of Lambda.
 
 ## DynamoDB Event Roll-Ups
 
-Our better example is a Lambda function that rolls up the stream of incoming
-scores into a "recent best" record that has the best scores in the past hour.
-This fits Lambda much better because each event (game play-through) is
-independent and the high score list doesn't need to be updated by the client,
-and is high-traffic so it can't be computed on every read.
+Let's take an online game as an example, where a list of top scores need to be
+displayed. The Lambda function will roll up the stream of incoming scores into
+a "recent best" record that has the best scores in the past hour. You may even
+think of that record as a sort of [materialized view][mview] put together by
+your Lambda function. This fits Lambda much better because each event (game
+play-through) is independent and the high score list doesn't need to be updated
+by the client, and is high-traffic so it can't be computed on every read.
 
 ### Problem Outline
 
@@ -251,7 +252,7 @@ To solve this with Lambda, we can build a flow like:
 at the end of each game, this record is stored to the DynamoDB
 table. First, let's see what an item looks like.
 
-```
+```json
 {
     "event_key": "{uid}",
     "length_seconds": 55,
@@ -268,7 +269,7 @@ table. First, let's see what an item looks like.
 
 The KeySchema is also important here. That looks like:
 
-```
+```json
 [
   {
     AttributeName: "event_key",
@@ -287,7 +288,7 @@ key design in this [AWS Advent DynamoDB post][awsadvent] or in the [MongoDB docs
 
 ### Function Roll-Up
 
-```
+```javascript
 // ProcessScores.js
 var AWS = require('aws-sdk');
 var async = require('async');
@@ -351,3 +352,10 @@ why some workloads make more sense for this nascent service.
 [microservices]: http://martinfowler.com/articles/microservices.html
 [awsadvent]: http://awsadvent.tumblr.com/post/104615780454/aws-advent-2014-an-introduction-to-dynamodb
 [mongo-shard]: http://docs.mongodb.org/manual/tutorial/choose-a-shard-key/
+[paas]: https://en.wikipedia.org/wiki/Platform_as_a_service
+[kinesis]: https://aws.amazon.com/kinesis/
+[s3]: https://aws.amazon.com/s3/
+[dynamo]: https://aws.amazon.com/dynamodb/
+[node]: https://nodejs.org/
+[arn]: https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
+[mview]: https://en.wikipedia.org/wiki/Materialized_view
