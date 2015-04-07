@@ -17,16 +17,16 @@ have as many functions as you can trigger running at once. You could use it as
 a replacement for resque or another background job processor with a managed
 solution.
 
-This post is a tour of the powerful ways you can use (or misuse) Lambda to
-react to events. First, we'll tour a sample application I built that generates
-a static site from markdown files in S3 to learn the ropes, then we'll examine
-more effective ways to use Lambda.
+This post is a tour of the powerful ways you can use Lambda to react to events.
+First, we'll tour a sample application I built that generates a static site
+from markdown files in S3, then we'll examine more effective ways to use
+Lambda.
 
 ## Caveat Emptors
 
-Before we get started, let's agree on a couple of things. Lambda as a service
-name is a bit annoying because it stomps over several other useful contexts for
-the word, but we'll suspend those for the moment.
+Before we get started, let's get a few things out of the way. Lambda as a
+service name is a bit annoying because it stomps over several other useful
+contexts for the word, but we'll suspend those for the moment.
 
 Lambda also has several limitations at the time of this writing.
 
@@ -40,8 +40,8 @@ Lambda also has several limitations at the time of this writing.
 
 Being able to react to events without needing to constantly run (and pay for)
 EC2 instances opens up new ways to use existing tools.
-[Hugo-lambda][hugolambda] takes advantage of Lambda to rebuild a static site
-when changes are made.
+[Hugo-lambda][hugolambda] rebuilds a static site from source whenever a change
+is uploaded to S3.
 
 It's likely the cheapest hosted [CMS][cms] around. Using S3 [website
 hosting][s3web] for generated content, [Route53][r53] for DNS, and Lambda to
