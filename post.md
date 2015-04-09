@@ -1,9 +1,9 @@
-[AWS Lambda][lambda] is a service (in developer preview) that consumes events
-from [Kinesis][kinesis], [S3][s3], [DynamoDB][dynamo], and more. You can use it
-to make advanced materialized views out of DynamoDB tables, react to uploaded
-images, or archive old content. In short, you write a function (currently only
-in [node.js][node]) and it is presented with JSON containing information about the
-event's source and content.
+[AWS Lambda][lambda] is a service (released 04/09/2015) that consumes events
+from [Kinesis][kinesis], [S3][s3], [DynamoDB][dynamo], [SNS][sns], and more.
+You can use it to make advanced materialized views out of DynamoDB tables,
+react to uploaded images, or archive old content. In short, you write a
+function (currently only in [node.js][node]) and it is presented with JSON
+containing information about the event's source and content.
 
 > Another way to run Node.js? Why bother?
 >
@@ -31,7 +31,7 @@ Lambda also has several limitations at the time of this writing.
 
 * Function runtime is limited to 60 seconds
 * Node.js is the only supported language
-* Maximum of 500MB storage and 1GB memory
+* Maximum of 500MB (ephemeral) storage and 1GB memory
 * Debugging involves a lot waiting for CloudWatch logs to show up
 * Only one Lambda trigger can exist per S3 bucket
 
@@ -339,7 +339,9 @@ score list doesn't always need to be up-to-date.
 ## Wrapping Up
 
 Here we've seen two applications of Lambda to different problems, and learned
-why some workloads make more sense for this nascent service.
+why some workloads make more sense for this new service. Most of the marketing
+for Lambda centers around mobile apps and games, but there are plenty of other
+places Lambda fits well.
 
 
 [cms]: http://en.wikipedia.org/wiki/Content_management_system
@@ -361,3 +363,4 @@ why some workloads make more sense for this nascent service.
 [node]: https://nodejs.org/
 [arn]: https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
 [mview]: https://en.wikipedia.org/wiki/Materialized_view
+[sns]: https://aws.amazon.com/sns/
