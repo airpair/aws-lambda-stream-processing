@@ -134,13 +134,16 @@ advantages, let's see what matches up.
 Each Lambda function is an independent component, and they can be chained
 together by having the output of one trigger the next function (or group of
 functions). Because of this, they are easy to experiment with and play well
-with other data systems.
+with other data systems. When you call a function, you can also select the
+[version or alias][versioning] to execute. This means you can move dev/test
+traffic over to newer handlers without touching prod.
 
 ### Smart endpoints and dumb pipes
 
 In a lot of definitions of microservices, people take this to mean "uses
-RESTful HTTP interfaces between components". Lambda events follow a strict JSON
-format. Here's an abbreviated example of an S3 event for a new object.
+RESTful HTTP interfaces between components". Lambda events follow strict JSON
+formats, which can differ between different event sources. Here's an
+abbreviated example of an S3 event for a new object.
 
 ```javascript
 {
@@ -175,12 +178,13 @@ format. Here's an abbreviated example of an S3 event for a new object.
 }
 ```
 
-That seems pretty simple, it even includes extra metadata about the object like
-it's size and etag (md5sum). The message format is one part of the pipe, the
-other part is how messages are received. The event notification system is very
-straightforward because it only needs the [ARN][arn] of the sender (source) and
-receiver (Lambda function) to successfully route messages. All the delivery
-semantics are hidden completely.
+That seems pretty comprehensive, it even includes extra metadata about the
+object like it's size and etag (md5sum). The message format is one part of the
+pipe, the other part is how messages are received. The event notification
+system is very straightforward because it only needs the [ARN][arn] of the
+sender (source) and receiver (Lambda function) to successfully route messages.
+The actual delivery semantics of *how* the message gets to the recipient are
+hidden completely.
 
 ### Decentralized Data Management
 
@@ -366,3 +370,4 @@ places Lambda fits well.
 [arn]: https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
 [mview]: https://en.wikipedia.org/wiki/Materialized_view
 [sns]: https://aws.amazon.com/sns/
+[versioning]: http://docs.aws.amazon.com/lambda/latest/dg/versioning-aliases.html
