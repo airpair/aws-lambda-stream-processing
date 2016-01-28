@@ -198,11 +198,17 @@ image upload to be resized in Lambda, or a new document to be indexed.
 
 Lambda functions abstract away most failure modes, since instance- and
 availability-zone-level failures can be routed around by triggering functions
-to run elsewhere.
+to run elsewhere. If you have a traditional autoscaling group or fleet of EC2
+instances, when there are hardware failures you have to handle adding the new
+machines to the load balancer or waiting for the autoscaling group to add them
+in.
+
+With Lambda, AWS will shift your computation over to new hosts without any
+intervention or service interruption.
 
 ## Hugo-Lambda Usage Patterns
 
-Hugo-lambda is a great demo application, but not a great use of Lambda. In
+Hugo-lambda is a fun demo application, but not a great use of Lambda. In
 fact, it violates two pretty critical assumptions made by the service. Lambda
 is on the idea that every event is independent can be processed incrementally.
 Unfortunately, for a full static site (in my case a blog), this isn't true.
