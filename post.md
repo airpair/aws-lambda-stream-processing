@@ -2,8 +2,9 @@
 from [Kinesis][kinesis], [S3][s3], [DynamoDB][dynamo], [SNS][sns], and more.
 You can use it to make advanced materialized views out of DynamoDB tables,
 react to uploaded images, or archive old content. In short, you write a
-function (currently only in [node.js][node]) and it is presented with JSON
-containing information about the event's source and content.
+function (currently only in [node.js][node], [Python 2][python], or
+[Java 8][java8]) and it is presented with JSON containing information about the
+event's source and content.
 
 > Another way to run Node.js? Why bother?
 >
@@ -29,11 +30,10 @@ contexts for the word, but we'll suspend those for the moment.
 
 Lambda also has several limitations at the time of this writing.
 
-* Function runtime is limited to 60 seconds
-* Node.js is the only supported language
+* Function runtime is limited to 300 seconds
+* Node.js v0.10.36, Python 2.7, and Java 8 are the only supported languages
 * Maximum of 500MB (ephemeral) storage and 1GB memory
 * Debugging involves a lot waiting for CloudWatch logs to show up
-* Only one Lambda trigger can exist per S3 bucket
 
 ## Hugo-Lambda: Demo App
 
@@ -42,18 +42,18 @@ EC2 instances opens up new ways to use existing tools.
 [Hugo-lambda][hugolambda] rebuilds a static site from source whenever a change
 is uploaded to S3.
 
-It's likely the cheapest hosted [CMS][cms] around. Using S3 [website
-hosting][s3web] for generated content, [Route53][r53] for DNS, and Lambda to
-generate the site from source can host your entire site within the AWS free
-tier. Even if you don't qualify for the free tier, the total cost for a site
-updated daily would be less than $1 per month.
+It's likely the cheapest hosted [CMS][cms] around. Using S3
+[website hosting][s3web] for generated content, [Route53][r53] for DNS, and
+Lambda to generate the site from source can host your entire site within the
+AWS free tier. Even if you don't qualify for the free tier, the total cost for
+a site updated daily would be less than $1 per month.
 
 Every time new content is uploaded, hugo-lambda downloads your site templates,
-themes, and content to run `hugo` and uploads the generated site (with the
-correct storage ACLs) to the public bucket for your site.
+themes, and content to build them with [Hugo][hugo] and upload the generated
+site (with the correct S3 ACLs) to the public bucket for your site.
 
 Of course, if you're like me you don't get around to updating your blog daily,
-but that's ok. As with all of AWS, you only pay for what you use. You're
+but that's ok. As with the rest of AWS, you only pay for what you use. You're
 charged only for time hugo-lambda actually spends generating your site instead
 of paying to run WordPress, Drupal, or another CMS 24/7.
 
@@ -361,6 +361,8 @@ places Lambda fits well.
 [s3]: https://aws.amazon.com/s3/
 [dynamo]: https://aws.amazon.com/dynamodb/
 [node]: https://nodejs.org/
+[python]: https://python.org/
+[java8]: http://www.oracle.com/technetwork/java/javase/overview/java8-2100321.html
 [arn]: https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
 [mview]: https://en.wikipedia.org/wiki/Materialized_view
 [sns]: https://aws.amazon.com/sns/
